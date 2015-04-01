@@ -195,9 +195,17 @@ picture {
   margin: 0;
   max-width: 100%; }
 
-nav {
-  position: -webkit-sticky;
-  top: 0;
-  z-index: 1; }
-  nav a nav-active {
-    color: white; }
+header {
+  position: fixed;
+  z-index: 3;
+  width: 100%;
+  left: 0;
+  top: 0; }
+
+.js .nav-collapse {
+  clip: rect(0 0 0 0);
+  max-height: 0;
+  position: absolute;
+  display: block;
+  overflow: hidden;
+  zoom: 1; }

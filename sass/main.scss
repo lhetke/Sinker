@@ -4,16 +4,3 @@
 @import "base/base";
 
 $sticky: position -webkit-sticky, z-index 1;
-
-
-nav{
-	position: -webkit-sticky;
-	top: 0;
-	z-index: 1;
-	a{
-		nav-active{
-			color: white;
-		}
-	}
-}
-

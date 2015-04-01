@@ -12,27 +12,32 @@
         <link rel="stylesheet" href="css/main.css">
 
         <script src="js/vendor/modernizr-2.8.3.min.js"></script>
+        <script src="js/responsive-nav.js"></script>
     </head>
     <body>
         <!--[if lt IE 8]>
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
 
-        <nav>
-        <img src="img/Logo.png">
-            <ul id="nav">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#azubis">Wir Back Azubis</a></li>
-                <li><a href="#beruf">Unser Beruf</a></li>
-                <li><a href="#tag">Tagesablauf</a></li>
-                <li><a href="#tipps">Tipps und Links</a></li>
-                <li><a href="#kontakt">Kontakt/ Impressum</a></li>
-            </ul>
-        </nav>
+        <header>
+            <a href="#home" class="logo" data-scroll><img src="img/Logo.png"></a>
+                <nav class="nav-collapse">
+                    <ul id="nav">
+                        <li class="menu-item active"><a href="#home" data-scroll>Home</a></li>
+                        <li class="menu-item"><a href="#azubis" data-scroll>Wir Back Azubis</a></li>
+                        <li class="menu-item"><a href="#beruf" data-scroll>Unser Beruf</a></li>
+                        <li class="menu-item"><a href="#tag" data-scroll>Tagesablauf</a></li>
+                        <li class="menu-item"><a href="#tipps" data-scroll>Tipps und Links</a></li>
+                        <li class="menu-item"><a href="#kontakt" data-scroll>Kontakt/ Impressum</a></li>
+                    </ul>
+            </nav>
+        </header>
+
+
+        <div id="home" class="section">
 
         <img src="img/Bild_01.jpg">
 
-        <div id="home" class="section">
             <article>
                 <p>
                     Auszubildende fürs Bäckerhandwerk
@@ -182,11 +187,9 @@
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
 
         <script src="js/plugins.js"></script>
-            <script>
-                $(document).ready(function() {
-                $('#nav').onePageNav();
-                });
-            </script>
         <script src="js/main.js"></script>
+        <script src="js/fastclick.js"></script>
+        <script src="js/scroll.js"></script>
+        <script src="js/fixed-responsive-nav.js"></script>
     </body>
 </html>
