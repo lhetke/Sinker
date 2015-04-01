@@ -2,6 +2,9 @@
 @import "base/grid-settings";
 @import "neat";
 @import "base/base";
+@import "parallax";
+@import "navigation";
+@import "sections";
 
 $sticky: position -webkit-sticky, z-index 1;
 
