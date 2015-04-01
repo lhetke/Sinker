@@ -194,3 +194,11 @@ img,
 picture {
   margin: 0;
   max-width: 100%; }
+
+.nav {
+  height: 5em;
+  width: 100%; }
+
+.logo {
+  height: inherit;
+  width: auto; }
