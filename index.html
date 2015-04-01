@@ -11,28 +11,42 @@
         <link rel="stylesheet" href="css/normalize.min.css">
         <link rel="stylesheet" href="css/main.css">
 
+        <script src="js/vendor/jquery-1.11.2.min.js"></script>
+
+        <script type="text/javascript">
+    
+
+        $(document).ready( function() {
+            $('.nav').smint({
+                'scrollSpeed' : 1000
+            });
+        });
+        
+        
+        </script>
         <script src="js/vendor/modernizr-2.8.3.min.js"></script>
+        
     </head>
     <body>
         <!--[if lt IE 8]>
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
 
-        <nav>
-        <img src="img/Logo.png">
-            <ul id="nav">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#azubis">Wir Back Azubis</a></li>
-                <li><a href="#beruf">Unser Beruf</a></li>
-                <li><a href="#tag">Tagesablauf</a></li>
-                <li><a href="#tipps">Tipps und Links</a></li>
-                <li><a href="#kontakt">Kontakt/ Impressum</a></li>
-            </ul>
-        </nav>
+        <div class="nav">
+        <!-- <img class="logo" src="img/Logo.png">-->
+            <div class="menu">
+                <a href="#home" class="subNavBtn">Home</a>
+                <a href="#azubis" class="subNavBtn">Wir Back Azubis</a>
+                <a href="#beruf" class="subNavBtn">Unser Beruf</a>
+                <a href="#tag" class="subNavBtn">Tagesablauf</a>
+                <a href="#tipps" class="subNavBtn">Tipps und Links</a>
+                <a href="#kontakt" class="subNavBtn">Kontakt/ Impressum</a>
+            </div>
+        </div>
 
         <img src="img/Bild_01.jpg">
 
-        <div id="home" class="section">
+        <div class="section home">
             <article>
                 <p>
                     Auszubildende fürs Bäckerhandwerk
@@ -43,7 +57,7 @@
 
         <img src="img/Bild_11.jpg">
 
-        <div id="azubis" class="section">
+        <div class="section azubis">
             <article>
                 <h1>
                     Wir Back Azubis
@@ -54,7 +68,7 @@
             </article>
         </div>
 
-        <div id="beruf" class="section">
+        <div class="section beruf">
             <section>
                 <img src="img/Bild_04.jpg">
                 <img src="img/Bild_05.jpg">
@@ -73,7 +87,7 @@
             </article>
         </div>
 
-        <div id="tag" class="section">
+        <div class="section tag">
             <section>
                 <h1>
                     Tagesablauf
@@ -111,7 +125,7 @@
 
         <img src="img/Bild_12.jpg">
 
-        <div id="tipps" class="section">
+        <div class="section tipps">
             <article>
                 <h1>
                     Tipps und Links
@@ -147,7 +161,7 @@
             </article>
         </div>
 
-        <div id="kontakt" class="section">
+        <div class="section kontakt">
             <footer>
                 <article>
                     <h1>
@@ -182,11 +196,6 @@
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
 
         <script src="js/plugins.js"></script>
-            <script>
-                $(document).ready(function() {
-                $('#nav').onePageNav();
-                });
-            </script>
         <script src="js/main.js"></script>
     </body>
 </html>

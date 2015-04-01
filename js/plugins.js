@@ -23,259 +23,200 @@
 
 
 /*
- * jQuery One Page Nav Plugin
- * http://github.com/davist11/jQuery-One-Page-Nav
- *
- * Copyright (c) 2010 Trevor Davis (http://trevordavis.net)
- * Dual licensed under the MIT and GPL licenses.
- * Uses the same license as jQuery, see:
- * http://jquery.org/license
- *
- * @version 3.0.0
- *
- * Example usage:
- * $('#nav').onePageNav({
- *   currentClass: 'current',
- *   changeHash: false,
- *   scrollSpeed: 750
- * });
- */
 
-;(function($, window, document, undefined){
+SMINT V1.0 by Robert McCracken
+SMINT V2.0 by robert McCracken with some awesome help from Ryan Clarke (@clarkieryan) and mcpacosy ‏(@mcpacosy)
+SMINT V3.0 by robert McCracken with some awesome help from Ryan Clarke (@clarkieryan) and mcpacosy ‏(@mcpacosy)
 
-    // our plugin constructor
-    var OnePageNav = function(elem, options){
-        this.elem = elem;
-        this.$elem = $(elem);
-        this.options = options;
-        this.metadata = this.$elem.data('plugin-options');
-        this.$win = $(window);
-        this.sections = {};
-        this.didScroll = false;
-        this.$doc = $(document);
-        this.docHeight = this.$doc.height();
-    };
+SMINT is my first dabble into jQuery plugins!
 
-    // the plugin prototype
-    OnePageNav.prototype = {
-        defaults: {
-            navItems: 'a',
-            currentClass: 'current',
-            changeHash: false,
-            easing: 'swing',
-            filter: '',
-            scrollSpeed: 750,
-            scrollThreshold: 0.5,
-            begin: false,
-            end: false,
-            scrollChange: false
-        },
+http://www.outyear.co.uk/smint/
 
-        init: function() {
-            // Introduce defaults that can be extended either
-            // globally or using an object literal.
-            this.config = $.extend({}, this.defaults, this.options, this.metadata);
+If you like Smint, or have suggestions on how it could be improved, send me a tweet @rabmyself
 
-            this.$nav = this.$elem.find(this.config.navItems);
+*/
 
-            //Filter any links out of the nav
-            if(this.config.filter !== '') {
-                this.$nav = this.$nav.filter(this.config.filter);
+
+(function(){
+
+
+    $.fn.smint = function( options ) {
+
+        var settings = $.extend({
+            'scrollSpeed'  : 500,
+            'mySelector'     : 'div'
+        }, options);
+
+        // adding a class to users div
+        $(this).addClass('smint');
+
+
+                
+        
+        //Set the variables needed
+        var optionLocs = new Array(),
+            lastScrollTop = 0,
+            menuHeight = $(".smint").height(),
+            smint = $('.smint'),
+            smintA = $('.smint a'),
+            myOffset = smint.height();
+
+      
+
+
+
+        if ( settings.scrollSpeed ) {
+                var scrollSpeed = settings.scrollSpeed
             }
 
-            //Handle clicks on the nav
-            this.$nav.on('click.onePageNav', $.proxy(this.handleClick, this));
+        if ( settings.mySelector ) {
+                var mySelector = settings.mySelector
+        };
 
-            //Get the section positions
-            this.getPositions();
 
-            //Handle scroll changes
-            this.bindInterval();
 
-            //Update the positions on resize too
-            this.$win.on('resize.onePageNav', $.proxy(this.getPositions, this));
+        return smintA.each( function(index) {
+            
+            var id = $(this).attr('href').split('#')[1];
 
-            return this;
-        },
+            if (!$(this).hasClass("extLink")) {
+                $(this).attr('id', id);
+            }
 
-        adjustNav: function(self, $parent) {
-            self.$elem.find('.' + self.config.currentClass).removeClass(self.config.currentClass);
-            $parent.addClass(self.config.currentClass);
-        },
+            
+            //Fill the menu
+            optionLocs.push(Array(
+                $(mySelector+"."+id).position().top-menuHeight, 
+                $(mySelector+"."+id).height()+$(mySelector+"."+id).position().top, id)
+            );
 
-        bindInterval: function() {
-            var self = this;
-            var docHeight;
+            ///////////////////////////////////
 
-            self.$win.on('scroll.onePageNav', function() {
-                self.didScroll = true;
+            // get initial top offset for the menu 
+            var stickyTop = smint.offset().top; 
+
+            // check position and make sticky if needed
+            var stickyMenu = function(direction){
+
+                // current distance top
+                var scrollTop = $(window).scrollTop()+myOffset; 
+
+                // if we scroll more than the navigation, change its position to fixed and add class 'fxd', otherwise change it back to absolute and remove the class
+                if (scrollTop > stickyTop+myOffset) { 
+                    smint.css({ 'position': 'fixed', 'top':0,'left':0 }).addClass('fxd');
+
+                    // add padding to the body to make up for the loss in heigt when the menu goes to a fixed position.
+                    // When an item is fixed, its removed from the flow so its height doesnt impact the other items on the page
+                    $('body').css('padding-top', menuHeight );  
+                } else {
+                    smint.css( 'position', 'relative').removeClass('fxd'); 
+                    //remove the padding we added.
+                    $('body').css('padding-top', '0' ); 
+                }   
+
+                // Check if the position is inside then change the menu
+                // Courtesy of Ryan Clarke (@clarkieryan)
+                if(optionLocs[index][0] <= scrollTop && scrollTop <= optionLocs[index][1]){ 
+                    if(direction == "up"){
+                        $("#"+id).addClass("active");
+                        $("#"+optionLocs[index+1][2]).removeClass("active");
+                    } else if(index > 0) {
+                        $("#"+id).addClass("active");
+                        $("#"+optionLocs[index-1][2]).removeClass("active");
+                    } else if(direction == undefined){
+                        $("#"+id).addClass("active");
+                    }
+                    $.each(optionLocs, function(i){
+                        if(id != optionLocs[i][2]){
+                            
+                            $("#"+optionLocs[i][2]).removeClass("active");
+                        }
+                    });
+                }
+            };
+
+            // run functions
+            stickyMenu();
+
+            // run function every time you scroll
+            $(window).scroll(function() {
+                //Get the direction of scroll
+                var st = $(this).scrollTop()+myOffset;
+                if (st > lastScrollTop) {
+                    direction = "down";
+                } else if (st < lastScrollTop ){
+                    direction = "up";
+                }
+                lastScrollTop = st;
+                stickyMenu(direction);
+
+                // Check if at bottom of page, if so, add class to last <a> as sometimes the last div
+                // isnt long enough to scroll to the top of the page and trigger the active state.
+
+                if($(window).scrollTop() + $(window).height() == $(document).height()) {
+                    smintA.removeClass('active')
+                    $(".smint a:not('.extLink'):last").addClass('active')
+                    
+                } else {
+                    smintA.last().removeClass('active')
+                }
             });
 
-            self.t = setInterval(function() {
-                docHeight = self.$doc.height();
+            ///////////////////////////////////////
+        
+            $(this).on('click', function(e){
+                // gets the height of the users div. This is used for off-setting the scroll so the menu doesnt overlap any content in the div they jst scrolled to
+                var myOffset = smint.height();   
 
-                //If it was scrolled
-                if(self.didScroll) {
-                    self.didScroll = false;
-                    self.scrollChange();
+                // stops hrefs making the page jump when clicked
+                e.preventDefault();
+                
+                // get the hash of the button you just clicked
+                var hash = $(this).attr('href').split('#')[1];
+
+                
+
+                var goTo =  $(mySelector+'.'+ hash).offset().top-myOffset;
+                
+                // Scroll the page to the desired position!
+                $("html, body").stop().animate({ scrollTop: goTo }, scrollSpeed);
+                
+                // if the link has the '.extLink' class it will be ignored 
+                // Courtesy of mcpacosy ‏(@mcpacosy)
+                if ($(this).hasClass("extLink"))
+                {
+                    return false;
                 }
 
-                //If the document height changes
-                if(docHeight !== self.docHeight) {
-                    self.docHeight = docHeight;
-                    self.getPositions();
+            }); 
+
+
+            //This lets yo use links in body text to scroll. Just add the class 'intLink' to your button and it will scroll
+
+            $('.intLink').on('click', function(e){
+                var myOffset = smint.height();   
+
+                e.preventDefault();
+                
+                var hash = $(this).attr('href').split('#')[1];
+
+                if (smint.hasClass('fxd')) {
+                    var goTo =  $(mySelector+'.'+ hash).position().top-myOffset;
+                } else {
+                    var goTo =  $(mySelector+'.'+ hash).position().top-myOffset*2;
                 }
-            }, 250);
-        },
+                
+                $("html, body").stop().animate({ scrollTop: goTo }, scrollSpeed);
 
-        getHash: function($link) {
-            return $link.attr('href').split('#')[1];
-        },
-
-        getPositions: function() {
-            var self = this;
-            var linkHref;
-            var topPos;
-            var $target;
-
-            self.$nav.each(function() {
-                linkHref = self.getHash($(this));
-                $target = $('#' + linkHref);
-
-                if($target.length) {
-                    topPos = $target.offset().top;
-                    self.sections[linkHref] = Math.round(topPos);
-                }
-            });
-        },
-
-        getSection: function(windowPos) {
-            var returnValue = null;
-            var windowHeight = Math.round(this.$win.height() * this.config.scrollThreshold);
-
-            for(var section in this.sections) {
-                if((this.sections[section] - windowHeight) < windowPos) {
-                    returnValue = section;
-                }
-            }
-
-            return returnValue;
-        },
-
-        handleClick: function(e) {
-            var self = this;
-            var $link = $(e.currentTarget);
-            var $parent = $link.parent();
-            var newLoc = '#' + self.getHash($link);
-
-            if(!$parent.hasClass(self.config.currentClass)) {
-                //Start callback
-                if(self.config.begin) {
-                    self.config.begin();
+                if ($(this).hasClass("extLink"))
+                {
+                    return false;
                 }
 
-                //Change the highlighted nav item
-                self.adjustNav(self, $parent);
-
-                //Removing the auto-adjust on scroll
-                self.unbindInterval();
-
-                //Scroll to the correct position
-                self.scrollTo(newLoc, function() {
-                    //Do we need to change the hash?
-                    if(self.config.changeHash) {
-                        window.location.hash = newLoc;
-                    }
-
-                    //Add the auto-adjust on scroll back in
-                    self.bindInterval();
-
-                    //End callback
-                    if(self.config.end) {
-                        self.config.end();
-                    }
-                });
-            }
-
-            e.preventDefault();
-        },
-
-        scrollChange: function() {
-            var windowTop = this.$win.scrollTop();
-            var position = this.getSection(windowTop);
-            var $parent;
-
-            //If the position is set
-            if(position !== null) {
-                $parent = this.$elem.find('a[href$="#' + position + '"]').parent();
-
-                //If it's not already the current section
-                if(!$parent.hasClass(this.config.currentClass)) {
-                    //Change the highlighted nav item
-                    this.adjustNav(this, $parent);
-
-                    //If there is a scrollChange callback
-                    if(this.config.scrollChange) {
-                        this.config.scrollChange($parent);
-                    }
-                }
-            }
-        },
-
-        scrollTo: function(target, callback) {
-            var offset = $(target).offset().top;
-
-            $('html, body').animate({
-                scrollTop: offset
-            }, this.config.scrollSpeed, this.config.easing, callback);
-        },
-
-        unbindInterval: function() {
-            clearInterval(this.t);
-            this.$win.unbind('scroll.onePageNav');
-        }
-    };
-
-    OnePageNav.defaults = OnePageNav.prototype.defaults;
-
-    $.fn.onePageNav = function(options) {
-        return this.each(function() {
-            new OnePageNav(this, options).init();
+            }); 
         });
+
     };
 
-})( jQuery, window , document );
-
-
-/*!
- * jquery.scrollto.js 0.0.1 - https://github.com/yckart/jquery.scrollto.js
- * Scroll smooth to any element in your DOM.
- *
- * Copyright (c) 2012 Yannick Albert (http://yckart.com)
- * Licensed under the MIT license (http://www.opensource.org/licenses/mit-license.php).
- * 2013/02/17
- **/
-$.scrollTo = $.fn.scrollTo = function(x, y, options){
-    if (!(this instanceof $)) return $.fn.scrollTo.apply($('html, body'), arguments);
-
-    options = $.extend({}, {
-        gap: {
-            x: 0,
-            y: 0
-        },
-        animation: {
-            easing: 'swing',
-            duration: 600,
-            complete: $.noop,
-            step: $.noop
-        }
-    }, options);
-
-    return this.each(function(){
-        var elem = $(this);
-        elem.stop().animate({
-            scrollLeft: !isNaN(Number(x)) ? x : $(y).offset().left + options.gap.x,
-            scrollTop: !isNaN(Number(y)) ? y : $(y).offset().top + options.gap.y
-        }, options.animation);
-    });
-};
+    $.fn.smint.defaults = { 'scrollSpeed': 500, 'mySelector': 'div'};
+})(jQuery);
